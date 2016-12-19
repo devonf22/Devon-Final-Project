@@ -44,6 +44,10 @@ head(women) # now my data set has no NAs
 women <- women[, -6]
 head(women)
 
+women$Per.F <- women$X..female
+women <- women [, -5]
+head(women)
+
 
 # Working with the second data set ----
 # now i want to work with a data set showing percent prevalence of undernourishment by country
@@ -53,34 +57,31 @@ under <- read.csv(paste(p.data, "Undernourishment.csv", sep = ""), stringsAsFact
 str(under)
 head(under)
 under$Country <- under$X.table.of.contents. # rename the country column to match name to women data set
+under <- under[, -c(1:2)] # remove the first two columns of useless info
 # I'm going to rename the column names to be single years rather than a range to make the data easier to work with
 # I will rename them to be the middle year of each range 
-under <- under[, -c(1:2)]
-head(under)
-colnames(under) <- c("1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998" "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "Country")
-
+colnames(under) <- c("1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "Country")
 head(under)
 
+
+
+# merging the two data sets and cleaning up data ----
+# I can now merge both data sets into one by the Country column
+# which it will do automatically because they have the same column name for Country
+# and it will remove all country rows not present in both data sets
 both <- merge(women, under)
-head(both)
-both$X..female <- as.numeric(sub("%", "", both$X..female))
-str(both)
-both$`1998-00` <- as.numeric(sub("<", "", both$`1998-00`))
-both$`1999-01` <- as.numeric(sub("<", "", both$`1999-01`))
-both$`2000-02` <- as.numeric(sub("<", "", both$`2000-02`))
-both$`2001-03` <- as.numeric(sub("<", "", both$`2001-03`))
-both$`2002-04` <- as.numeric(sub("<", "", both$`2002-04`))
-both$`2003-05` <- as.numeric(sub("<", "", both$`2003-05`))
-both$`2004-06` <- as.numeric(sub("<", "", both$`2004-06`))
-both$`2005-07` <- as.numeric(sub("<", "", both$`2005-07`))
-both$`2006-08` <- as.numeric(sub("<", "", both$`2006-08`))
-both$`2007-09` <- as.numeric(sub("<", "", both$`2007-09`))
-both$`2008-10` <- as.numeric(sub("<", "", both$`2008-10`))
-both$`2009-11` <- as.numeric(sub("<", "", both$`2009-11`))
-both$`2010-12` <- as.numeric(sub("<", "", both$`2010-12`))
-both$`2011-13` <- as.numeric(sub("<", "", both$`2011-13`))
-both$`2012-14` <- as.numeric(sub("<", "", both$`2012-14`))
-both$`2013-15` <- as.numeric(sub("<", "", both$`2013-15`))
-both$`2014-16` <- as.numeric(sub("<", "", both$`2014-16`))
+head(both) # it worked! 
 
-str(both) # this is how I want the data, I'm done fixing it 
+# now to clean up the data set
+# there are many values with "%", or "<" and I want to remove the symbols
+both$Per.F <- as.numeric(sub("%", "", both$Per.F))
+
+# make a loop to remove all the "<" from all year columns
+for(i in 6:length(both)){
+  both[, i] <- as.numeric(sub("<", "", both[, i]))
+}
+str(both) # it worked!
+# this is how I want the data, I'm done fixing it 
+
+# last step - write the new data set as a new csv in the data folder
+write.csv(both, paste(p.data, "Merged.Data.Table.csv", sep = ""))
