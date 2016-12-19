@@ -45,7 +45,6 @@ hist(both$`2006-08`)
 # create an empty vector with length of countries
 real <- rep(NA, length(both$Country))
 # now going to change the column names to be just the middle year instead of the range
-colnames(both) <- c("Country", "Year", "Total", "Female", "Per.F", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015")
 head(both)
 
 # now going to try to create a loop to match y values with years

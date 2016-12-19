@@ -1,3 +1,4 @@
+# making paths and folders ----
 # get working directory and list files
 wd <- getwd()
 list.files()
@@ -16,6 +17,7 @@ for(i in 1:length(folders)){
 p.data <- paste(wd, "/Data/", sep = "")
 p.analysis <- paste(wd, "/Analysis/", sep = "")
 p.figures <- paste(wd, "/Figures/", sep = "")
+
 
 
 # Working with the first data set ----
@@ -42,87 +44,21 @@ head(women) # now my data set has no NAs
 women <- women[, -6]
 head(women)
 
-# Now I want to change total workers and female workers to numbers instead of characters
-str(women$Total)
-
 
 # Working with the second data set ----
-
-list.files(p.data)
-food <- read.csv(paste(p.data, "Food_Value.csv", sep = ""), stringsAsFactors = FALSE)
-str(food)
-head(food)
-# rename the column to match the column name of the first data set I want to merge
-food$Country <- food$X.table.of.contents.
-# this created a new column at the end that's a replicate of the first...
-# I want to remove the first two columns from the data set 
-food <- food[, -c(1:2)]
-head(food)
-# now I want to remove all columns with dates earlier than 2000
-# it will be more accurate if i only use more recent data
-food <- food [, -c(1:8)]
-head(food)
-# I'm going to rename all of the columns with the years rather than have the years as the second row
-names(food) <- c("1998-00", "1999-01", "2000-02", "2001-03", "2002-04", "2003-05", "2004-06", "2005-07", "2006-08", "2007-09", "2008-10", "2009-11", "2010-12", "2011-13", "Country")
-names(food)
-# now I'm ready to try to merge both data sets 
-
-# Merging the two data sets ----
-
-# I want to merge the two data sets to match up by country name
-# the problem is that the women data set does not have all the countries that food does 
-
-# all of the countries that are in common with both data sets
-all <- merge(women, food)
-str(all)
-head(all)
-# successful!! now to try to change almost all variables into numbers... 
-
-all$`1998-00` <- as.numeric(all$`1998-00`)
-# that worked, let's make a loop to turn them all into numbers
-str(all)
-for(i in 6:length(all)){
-  name1 <- names(all[i])
-  all$name1 <- as.numeric(all$names1)
-}
-
-# I cannot make a loop that works, so I'm just going to do it by hand for now
-all$`1998-00` <- as.numeric(all$`1998-00`)
-all$`1999-01` <- as.numeric(all$`1999-01`)
-all$`2000-02` <- as.numeric(all$`2000-02`)
-all$`2001-03` <- as.numeric(all$`2001-03`)
-all$`2002-04` <- as.numeric(all$`2002-04`)
-all$`2003-05` <- as.numeric(all$`2003-05`)
-all$`2004-06` <- as.numeric(all$`2004-06`)
-all$`2005-07` <- as.numeric(all$`2005-07`)
-all$`2006-08` <- as.numeric(all$`2006-08`)
-all$`2007-09` <- as.numeric(all$`2007-09`)
-all$`2008-10` <- as.numeric(all$`2008-10`)
-all$`2009-11` <- as.numeric(all$`2009-11`)
-all$`2010-12` <- as.numeric(all$`2010-12`)
-all$`2011-13` <- as.numeric(all$`2011-13`)
-str(all)
-
-# now I want to change the Total and Female workers into numbers, but have to take the commas out...
-all$Total <- as.numeric(gsub(",","", as.character(all$Total)))
-all$Female <- as.numeric(gsub(",","", as.character(all$Female)))
-is.numeric(all$Total)
-# that worked!
-# now want to do the same thing with percentage female column, but take out % sign
-all$X..female <- as.numeric(sub("%", "", all$X..female))
-# that worked! 
-
-# Working with a third data set ----
-# now i want to work with a data set showing percent of undernourished by country
+# now i want to work with a data set showing percent prevalence of undernourishment by country
 # I'm going to go through the same processes with this data as with the food data set 
 list.files(p.data)
 under <- read.csv(paste(p.data, "Undernourishment.csv", sep = ""), stringsAsFactors = FALSE)
 str(under)
 head(under)
-under$Country <- under$X.table.of.contents.
+under$Country <- under$X.table.of.contents. # rename the country column to match name to women data set
+# I'm going to rename the column names to be single years rather than a range to make the data easier to work with
+# I will rename them to be the middle year of each range 
+under <- under[, -c(1:2)]
 head(under)
-under <- under[, -c(1:10)]
-names(under) <- c("1998-00", "1999-01", "2000-02", "2001-03", "2002-04", "2003-05", "2004-06", "2005-07", "2006-08", "2007-09", "2008-10", "2009-11", "2010-12", "2011-13", "2012-14", "2013-15", "2014-16", "Country")
+colnames(under) <- c("1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998" "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "Country")
+
 head(under)
 
 both <- merge(women, under)
