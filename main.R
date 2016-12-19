@@ -78,8 +78,73 @@ str(all)
 head(all)
 # successful!! now to try to change almost all variables into numbers... 
 
-as.numeric(all$`1998-00`)
-plot(all$Female, all$`1999-01`)
-plot(all$Female, all$`1998-00`)
+all$`1998-00` <- as.numeric(all$`1998-00`)
+# that worked, let's make a loop to turn them all into numbers
+str(all)
+for(i in 6:length(all)){
+  name1 <- names(all[i])
+  all$name1 <- as.numeric(all$names1)
+}
 
-sort(all$Female, decreasing = FALSE)  
+# I cannot make a loop that works, so I'm just going to do it by hand for now
+all$`1998-00` <- as.numeric(all$`1998-00`)
+all$`1999-01` <- as.numeric(all$`1999-01`)
+all$`2000-02` <- as.numeric(all$`2000-02`)
+all$`2001-03` <- as.numeric(all$`2001-03`)
+all$`2002-04` <- as.numeric(all$`2002-04`)
+all$`2003-05` <- as.numeric(all$`2003-05`)
+all$`2004-06` <- as.numeric(all$`2004-06`)
+all$`2005-07` <- as.numeric(all$`2005-07`)
+all$`2006-08` <- as.numeric(all$`2006-08`)
+all$`2007-09` <- as.numeric(all$`2007-09`)
+all$`2008-10` <- as.numeric(all$`2008-10`)
+all$`2009-11` <- as.numeric(all$`2009-11`)
+all$`2010-12` <- as.numeric(all$`2010-12`)
+all$`2011-13` <- as.numeric(all$`2011-13`)
+str(all)
+
+# now I want to change the Total and Female workers into numbers, but have to take the commas out...
+all$Total <- as.numeric(gsub(",","", as.character(all$Total)))
+all$Female <- as.numeric(gsub(",","", as.character(all$Female)))
+is.numeric(all$Total)
+# that worked!
+# now want to do the same thing with percentage female column, but take out % sign
+all$X..female <- as.numeric(sub("%", "", all$X..female))
+# that worked! 
+
+# Working with a third data set ----
+# now i want to work with a data set showing percent of undernourished by country
+# I'm going to go through the same processes with this data as with the food data set 
+list.files(p.data)
+under <- read.csv(paste(p.data, "Undernourishment.csv", sep = ""), stringsAsFactors = FALSE)
+str(under)
+head(under)
+under$Country <- under$X.table.of.contents.
+head(under)
+under <- under[, -c(1:10)]
+names(under) <- c("1998-00", "1999-01", "2000-02", "2001-03", "2002-04", "2003-05", "2004-06", "2005-07", "2006-08", "2007-09", "2008-10", "2009-11", "2010-12", "2011-13", "2012-14", "2013-15", "2014-16", "Country")
+head(under)
+
+both <- merge(women, under)
+head(both)
+both$X..female <- as.numeric(sub("%", "", both$X..female))
+str(both)
+both$`1998-00` <- as.numeric(sub("<", "", both$`1998-00`))
+both$`1999-01` <- as.numeric(sub("<", "", both$`1999-01`))
+both$`2000-02` <- as.numeric(sub("<", "", both$`2000-02`))
+both$`2001-03` <- as.numeric(sub("<", "", both$`2001-03`))
+both$`2002-04` <- as.numeric(sub("<", "", both$`2002-04`))
+both$`2003-05` <- as.numeric(sub("<", "", both$`2003-05`))
+both$`2004-06` <- as.numeric(sub("<", "", both$`2004-06`))
+both$`2005-07` <- as.numeric(sub("<", "", both$`2005-07`))
+both$`2006-08` <- as.numeric(sub("<", "", both$`2006-08`))
+both$`2007-09` <- as.numeric(sub("<", "", both$`2007-09`))
+both$`2008-10` <- as.numeric(sub("<", "", both$`2008-10`))
+both$`2009-11` <- as.numeric(sub("<", "", both$`2009-11`))
+both$`2010-12` <- as.numeric(sub("<", "", both$`2010-12`))
+both$`2011-13` <- as.numeric(sub("<", "", both$`2011-13`))
+both$`2012-14` <- as.numeric(sub("<", "", both$`2012-14`))
+both$`2013-15` <- as.numeric(sub("<", "", both$`2013-15`))
+both$`2014-16` <- as.numeric(sub("<", "", both$`2014-16`))
+
+str(both) # this is how I want the data, I'm done fixing it 
