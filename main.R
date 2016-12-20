@@ -20,10 +20,11 @@ p.figures <- paste(wd, "/Figures/", sep = "")
 
 
 
+
 # Working with the first data set ----
 # list the files in my data folder
 list.files(p.data)
-# read the first data file I want - stats about women workers in agriculture by country
+# read the first data file I want - stats about the percentage of female agriculture holders by country
 women <- read.csv(paste(p.data, "gender.agriculture.csv", sep = ""), stringsAsFactors = FALSE)
 str(women)
 head(women)
@@ -40,14 +41,14 @@ which(is.na(women$Source))# none
 
 women <- women[-4, ]
 head(women) # now my data set has no NAs 
-# I also want to remove the 6th column - source - because i have no use for it
+# I also want to remove the 6th column - "source" - because i have no use for it
 women <- women[, -6]
-head(women)
 
+# rename the column of percent female agricultural holders to be more recognizable
 women$Per.F <- women$X..female
+# this created a new column instead of renaming it, so now i have to remove the original column
 women <- women [, -5]
-head(women)
-
+# now the women data set is how I want it
 
 # Working with the second data set ----
 # now i want to work with a data set showing percent prevalence of undernourishment by country
@@ -63,18 +64,25 @@ under <- under[, -c(1:2)] # remove the first two columns of useless info
 colnames(under) <- c("1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "Country")
 head(under)
 
-
+# now the undernourishment data set is how I want it 
 
 # merging the two data sets and cleaning up data ----
 # I can now merge both data sets into one by the Country column
 # which it will do automatically because they have the same column name for Country
-# and it will remove all country rows not present in both data sets
+# and it will remove all countries (rows) not present in both data sets
 both <- merge(women, under)
 head(both) # it worked! 
 
 # now to clean up the data set
-# there are many values with "%", or "<" and I want to remove the symbols
+# I want to remove the "%" symbol from the percent female column
+# and then turn it into a numeric variable 
 both$Per.F <- as.numeric(sub("%", "", both$Per.F))
+
+# within the undernourishment data, there are many values of "<5"
+# meaning many countries have <5% undernourished people 
+# to make the data easier to work with, I want to remove the "<" symbol
+# and just run the data with regular 5's
+# even though this will be an overestimate and could affect the analysis
 
 # make a loop to remove all the "<" from all year columns
 for(i in 6:length(both)){
@@ -85,3 +93,5 @@ str(both) # it worked!
 
 # last step - write the new data set as a new csv in the data folder
 write.csv(both, paste(p.data, "Merged.Data.Table.csv", sep = ""))
+
+
