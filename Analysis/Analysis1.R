@@ -141,7 +141,6 @@ both.2 <- both[-no2, ]
 # now make a new plot with this data 
 plot(both.2$Per.F, both.2$Real, main = "Female Agricultural Holders and Undernourishment by Country", xlab = "Percentage of Female Agricultural Holders", ylab = "Percent Prevalance of Undernourishment", las = 1, pch = 16, col = "red")
 
-
 # now run the same analyses on this data as with the first graph
 m1 <- lm(both.2$Real ~ 1) # linear model using null hypothesis
 m2 <- lm(both.2$Real ~ both.2$Per.F) # linear model using explanatory variable
